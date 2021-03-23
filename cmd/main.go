@@ -13,7 +13,7 @@ func pollEvent(v *c2.CsvViewer) {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
 			switch ev.Key {
-			case termbox.KeyEsc:
+			case termbox.KeyEsc, termbox.KeyCtrlC:
 				return
 			case termbox.KeyArrowDown:
 				v.Down()
