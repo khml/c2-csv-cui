@@ -3,21 +3,26 @@ package c2
 import (
 	"encoding/csv"
 	"fmt"
+	"golang.org/x/exp/utf8string"
 	"os"
 )
 
-type CsvHeader = []string
-type CsvRecords = [][]string
-type TableMap = map[string]CsvRecords
+type CsvRecord = *[]utf8string.String
+type CsvRecords = []CsvRecord
 
 type CsvData struct {
-	Header  CsvHeader
+	Header  CsvRecord
 	Records CsvRecords
 }
 
-func ReadCsv(filepath string, skipRowNum int) (CsvData, error) {
-	var records CsvRecords
+func (c *CsvData) Print() {
+	fmt.Printf("%v\n", c.Header)
+	for _, record := range c.Records {
+		fmt.Printf("%v\n", record)
+	}
+}
 
+func ReadCsv(filepath string, skipRowNum int) (CsvData, error) {
 	f, err := os.Open(filepath)
 	if err != nil {
 		return CsvData{}, err
@@ -39,19 +44,23 @@ func ReadCsv(filepath string, skipRowNum int) (CsvData, error) {
 		return CsvData{}, err
 	}
 
+	header := toCsvRecord(&csvHeader)
+
+	var records CsvRecords
 	for {
 		r, err := reader.Read()
 		if err != nil {
 			break
 		}
-		records = append(records, r)
+		records = append(records, toCsvRecord(&r))
 	}
-	return CsvData{Header: csvHeader, Records: records}, nil
+	return CsvData{Header: header, Records: records}, nil
 }
 
-func (c *CsvData) Print() {
-	fmt.Printf("%v\n", c.Header)
-	for _, record := range c.Records {
-		fmt.Printf("%v\n", record)
+func toCsvRecord(rows *[]string) CsvRecord {
+	var utf8Rows []utf8string.String
+	for _, val := range *rows {
+		utf8Rows = append(utf8Rows, *utf8string.NewString(val))
 	}
+	return &utf8Rows
 }

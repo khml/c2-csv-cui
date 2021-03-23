@@ -16,8 +16,12 @@ func NewCsvViewer(c *CsvData) *CsvViewer {
 	return v
 }
 
-func (v *CsvViewer) getLine(i int) string {
-	return strings.Join(v.Data.Records[i], WHITESPACE)
+func (v *CsvViewer) getLine(n int) string {
+	var line string
+	for _, col := range *v.Data.Records[n] {
+		line += col.String() + WHITESPACE
+	}
+	return line
 }
 
 func (v *CsvViewer) getLines(n int) *[]string {
@@ -54,8 +58,13 @@ func (v *CsvViewer) Render() {
 
 	_, h := termbox.Size()
 
-	header := strings.Join(v.Data.Header, WHITESPACE)
-	RenderLine(0, 0, header)
+	var header []string
+	for _, col := range *v.Data.Header {
+		header = append(header, col.String())
+	}
+
+	headerLine := strings.Join(header, WHITESPACE)
+	RenderLine(0, 0, headerLine)
 
 	for i, row := range *v.getLines(h - 2) {
 		RenderLine(0, i+1, row)
