@@ -42,10 +42,12 @@ func (v *CsvViewer) Render() {
 		panic(err)
 	}
 
+	_, h := termbox.Size()
+
 	header := strings.Join(v.Data.Header, WHITESPACE)
 	RenderLine(0, 0, header)
 
-	for i := 0; i < 10; i++ {
+	for i := 0; i < h-2; i++ {
 		RenderLine(0, i+1, v.getLine(i+1))
 	}
 
