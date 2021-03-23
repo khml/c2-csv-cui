@@ -24,6 +24,8 @@ func pollEvent(v *c2.CsvViewer) {
 			default:
 				v.Render()
 			}
+		case termbox.EventResize:
+			v.Render()
 		default:
 			v.Render()
 		}
