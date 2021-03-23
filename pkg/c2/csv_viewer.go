@@ -18,8 +18,12 @@ func NewCsvViewer(c *CsvData) *CsvViewer {
 
 func (v *CsvViewer) getLine(n int) string {
 	var line string
-	for _, col := range *v.Data.Records[n] {
-		line += col.String() + WHITESPACE
+	record := *v.Data.Records[n]
+	for i, headerCol := range *v.Data.Header {
+		col := record[i]
+		line += col.Slice(0, minInt(col.RuneCount(), headerCol.RuneCount()))
+		p := maxInt(headerCol.RuneCount()-col.RuneCount(), 0) + 1
+		line += strings.Repeat(WHITESPACE, p)
 	}
 	return line
 }
