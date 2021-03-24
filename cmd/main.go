@@ -34,7 +34,7 @@ func pollEvent(v *c2.CsvViewer) {
 
 func main() {
 	if len(os.Args) < 2 {
-		log.Fatalf("Usage: %s path/to/csv \n", os.Args[0])
+		log.Fatalf("Usage: %s path/to/c2csv \n", os.Args[0])
 	}
 
 	filepath := os.Args[1]
@@ -50,7 +50,7 @@ func main() {
 
 	defer termbox.Close()
 
-	v := c2.NewCsvViewer(&csvData)
+	v := c2.NewCsvViewer(csvData)
 
 	pollEvent(v)
 }
