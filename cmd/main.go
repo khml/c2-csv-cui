@@ -22,6 +22,10 @@ func pollEvent(v *c2.CsvViewer) {
 			case termbox.KeyArrowUp:
 				v.Up()
 				v.Render()
+			case termbox.KeySpace:
+				_, h := termbox.Size()
+				v.DownN(h / 2)
+				v.Render()
 			default:
 				v.Render()
 			}
