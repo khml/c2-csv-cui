@@ -2,6 +2,7 @@ package main
 
 import (
 	"c2/pkg/c2"
+	"c2/pkg/c2/c2csv"
 	"github.com/nsf/termbox-go"
 	"log"
 	"os"
@@ -38,7 +39,7 @@ func main() {
 	}
 
 	filepath := os.Args[1]
-	csvData, err := c2.ReadCsv(filepath, 0)
+	csvData, err := c2csv.ReadCsv(filepath, 0)
 	if err != nil {
 		log.Fatal(err)
 	}

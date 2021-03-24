@@ -1,23 +1,9 @@
-package c2
+package c2csv
 
 import (
-	"c2/pkg/c2/c2csv"
 	"encoding/csv"
-	"fmt"
 	"os"
 )
-
-type CsvData struct {
-	Header  *c2csv.Row
-	Records []*c2csv.Row
-}
-
-func (c *CsvData) Print() {
-	fmt.Printf("%v\n", c.Header)
-	for _, record := range c.Records {
-		fmt.Printf("%v\n", record)
-	}
-}
 
 func ReadCsv(filepath string, skipRowNum int) (*CsvData, error) {
 	f, err := os.Open(filepath)
@@ -43,7 +29,7 @@ func ReadCsv(filepath string, skipRowNum int) (*CsvData, error) {
 
 	header := toCsvRecord(&csvHeader)
 
-	var records []*c2csv.Row
+	var records []*Row
 	for {
 		r, err := reader.Read()
 		if err != nil {
@@ -54,6 +40,6 @@ func ReadCsv(filepath string, skipRowNum int) (*CsvData, error) {
 	return &CsvData{Header: header, Records: records}, nil
 }
 
-func toCsvRecord(rows *[]string) *c2csv.Row {
-	return c2csv.FromStrings(rows)
+func toCsvRecord(rows *[]string) *Row {
+	return FromStrings(rows)
 }

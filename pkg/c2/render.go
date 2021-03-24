@@ -4,8 +4,6 @@ import (
 	"github.com/nsf/termbox-go"
 )
 
-const WHITESPACE = " "
-
 func RenderLine(x, y int, str string) {
 	color := termbox.ColorDefault
 	backgroundColor := termbox.ColorDefault

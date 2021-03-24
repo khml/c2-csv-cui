@@ -1,54 +1,39 @@
 package c2
 
 import (
+	"c2/pkg/c2/c2csv"
 	"c2/pkg/c2/util"
+	"c2/pkg/c2/view"
 	"github.com/nsf/termbox-go"
 	"strings"
 )
 
 type CsvViewer struct {
-	Data    *CsvData
+	Data    *c2csv.CsvData
 	ViewPos int
+	view    view.View
 }
 
-func NewCsvViewer(c *CsvData) *CsvViewer {
+func NewCsvViewer(c *c2csv.CsvData) *CsvViewer {
 	v := new(CsvViewer)
 	v.Data = c
+	v.view = new(view.HeaderSizeView)
 	return v
 }
 
-func (v *CsvViewer) getLine(rowNumber int) string {
-	var line string
-	record := *v.Data.Records[rowNumber]
-	for i, headerCell := range v.Data.Header.Cells {
-		col := record.Cells[i]
-		line += col.Head(headerCell.Len())
-		p := util.MaxInt(headerCell.Len()-col.Len(), 0) + 1
-		line += strings.Repeat(WHITESPACE, p)
-	}
-	return line
-}
-
-func (v *CsvViewer) getLines(rowSize int) *[]string {
-	var lines []string
-
-	upperLimit := util.MinInt(v.ViewPos+rowSize, len(v.Data.Records))
-	for i := v.ViewPos; i < upperLimit; i++ {
-		lines = append(lines, v.getLine(i))
-	}
-	return &lines
-}
-
-func (v *CsvViewer) headerSizeView() *[]string {
+func (v *CsvViewer) render() {
 	_, h := termbox.Size()
 
 	var header []string
 	for _, col := range v.Data.Header.Cells {
 		header = append(header, col.String())
 	}
-	lines := append([]string{strings.Join(header, WHITESPACE)}, *v.getLines(h - 2)...)
 
-	return &lines
+	lines := append([]string{strings.Join(header, " ")}, *v.view.GetLines(v.Data, v.ViewPos, h-2)...)
+
+	for i, row := range lines {
+		RenderLine(0, i, row)
+	}
 }
 
 func (v *CsvViewer) Down() {
@@ -73,9 +58,7 @@ func (v *CsvViewer) Render() {
 		panic(err)
 	}
 
-	for i, row := range *v.headerSizeView() {
-		RenderLine(0, i, row)
-	}
+	v.render()
 
 	err = termbox.Flush()
 	if err != nil {
