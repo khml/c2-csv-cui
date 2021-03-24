@@ -16,9 +16,9 @@ func NewCsvViewer(c *CsvData) *CsvViewer {
 	return v
 }
 
-func (v *CsvViewer) getLine(n int) string {
+func (v *CsvViewer) getLine(rowNumber int) string {
 	var line string
-	record := *v.Data.Records[n]
+	record := *v.Data.Records[rowNumber]
 	for i, headerCol := range *v.Data.Header {
 		col := record[i]
 		line += col.Slice(0, minInt(col.RuneCount(), headerCol.RuneCount()))
@@ -28,10 +28,10 @@ func (v *CsvViewer) getLine(n int) string {
 	return line
 }
 
-func (v *CsvViewer) getLines(n int) *[]string {
+func (v *CsvViewer) getLines(rowSize int) *[]string {
 	var lines []string
 
-	upperLimit := minInt(v.ViewPos+n, len(v.Data.Records))
+	upperLimit := minInt(v.ViewPos+rowSize, len(v.Data.Records))
 	for i := v.ViewPos; i < upperLimit; i++ {
 		lines = append(lines, v.getLine(i))
 	}
