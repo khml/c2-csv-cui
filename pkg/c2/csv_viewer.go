@@ -38,6 +38,18 @@ func (v *CsvViewer) getLines(rowSize int) *[]string {
 	return &lines
 }
 
+func (v *CsvViewer) headerSizeView() *[]string {
+	_, h := termbox.Size()
+
+	var header []string
+	for _, col := range *v.Data.Header {
+		header = append(header, col.String())
+	}
+	lines := append([]string{strings.Join(header, WHITESPACE)}, *v.getLines(h - 2)...)
+
+	return &lines
+}
+
 func (v *CsvViewer) Down() {
 	v.ViewPos = minInt(v.ViewPos+1, len(v.Data.Records))
 }
@@ -60,18 +72,8 @@ func (v *CsvViewer) Render() {
 		panic(err)
 	}
 
-	_, h := termbox.Size()
-
-	var header []string
-	for _, col := range *v.Data.Header {
-		header = append(header, col.String())
-	}
-
-	headerLine := strings.Join(header, WHITESPACE)
-	RenderLine(0, 0, headerLine)
-
-	for i, row := range *v.getLines(h - 2) {
-		RenderLine(0, i+1, row)
+	for i, row := range *v.headerSizeView() {
+		RenderLine(0, i, row)
 	}
 
 	err = termbox.Flush()
