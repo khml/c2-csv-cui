@@ -29,7 +29,7 @@ func (v *CsvViewer) render() {
 		header = append(header, col.String())
 	}
 
-	lines := append([]string{strings.Join(header, " ")}, *v.view.GetLines(v.Data, v.ViewPos, h-2)...)
+	lines := append([]string{strings.Join(header, view.WHITESPACE)}, *v.view.GetLines(v.Data, v.ViewPos, h-2)...)
 
 	for i, row := range lines {
 		RenderLine(0, i, row)
