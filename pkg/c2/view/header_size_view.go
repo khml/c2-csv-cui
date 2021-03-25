@@ -15,7 +15,7 @@ func (v *HeaderSizeView) getLine(data *c2csv.CsvData, rowNumber int) string {
 		col := record.Cells[i]
 		line += col.Head(headerCell.Len())
 		p := util.MaxInt(headerCell.Len()-col.Len(), 0) + 1
-		line += strings.Repeat(WHITESPACE, p)
+		line += strings.Repeat(util.WHITESPACE, p)
 	}
 	return line
 }
