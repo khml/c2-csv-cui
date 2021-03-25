@@ -11,6 +11,7 @@ import (
 type CsvViewer struct {
 	Data    *c2csv.CsvData
 	ViewPos int
+	cmdLine []rune
 	view    view.View
 }
 
@@ -30,10 +31,19 @@ func (v *CsvViewer) render() {
 	}
 
 	lines := append([]string{strings.Join(header, util.WHITESPACE)}, *v.view.GetLines(v.Data, v.ViewPos, h-2)...)
+	lines = append(lines, util.COLON+string(v.cmdLine))
 
 	for i, row := range lines {
 		RenderLine(0, i, row)
 	}
+}
+
+func (v *CsvViewer) BackspaceToCmd() {
+	l := len(v.cmdLine)
+	if l == 0 {
+		return
+	}
+	v.cmdLine = v.cmdLine[:l-1]
 }
 
 func (v *CsvViewer) Down() {
@@ -42,6 +52,10 @@ func (v *CsvViewer) Down() {
 
 func (v *CsvViewer) DownN(n int) {
 	v.ViewPos = util.MinInt(v.ViewPos+n, len(v.Data.Records))
+}
+
+func (v *CsvViewer) InputToCmd(r rune) {
+	v.cmdLine = append(v.cmdLine, r)
 }
 
 func (v *CsvViewer) Up() {

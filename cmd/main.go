@@ -22,8 +22,10 @@ func runApp(d *c2csv.CsvData) {
 				v.Down()
 			case termbox.KeyArrowUp:
 				v.Up()
+			case termbox.KeyBackspace2:
+				v.BackspaceToCmd()
 			default:
-				v.InputCmd(ev.Ch)
+				v.InputToCmd(ev.Ch)
 			}
 		}
 		v.Render()
