@@ -22,9 +22,8 @@ func runApp(d *c2csv.CsvData) {
 				v.Down()
 			case termbox.KeyArrowUp:
 				v.Up()
-			case termbox.KeySpace:
-				_, h := termbox.Size()
-				v.DownN(h / 2)
+			default:
+				v.InputCmd(ev.Ch)
 			}
 		}
 		v.Render()
