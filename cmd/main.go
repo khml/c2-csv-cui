@@ -8,8 +8,10 @@ import (
 	"os"
 )
 
-func pollEvent(v *c2.CsvViewer) {
+func runApp(d *c2csv.CsvData) {
+	v := c2.NewCsvViewer(d)
 	v.Render()
+
 	for {
 		switch ev := termbox.PollEvent(); ev.Type {
 		case termbox.EventKey:
@@ -18,22 +20,14 @@ func pollEvent(v *c2.CsvViewer) {
 				return
 			case termbox.KeyArrowDown:
 				v.Down()
-				v.Render()
 			case termbox.KeyArrowUp:
 				v.Up()
-				v.Render()
 			case termbox.KeySpace:
 				_, h := termbox.Size()
 				v.DownN(h / 2)
-				v.Render()
-			default:
-				v.Render()
 			}
-		case termbox.EventResize:
-			v.Render()
-		default:
-			v.Render()
 		}
+		v.Render()
 	}
 }
 
@@ -55,7 +49,5 @@ func main() {
 
 	defer termbox.Close()
 
-	v := c2.NewCsvViewer(csvData)
-
-	pollEvent(v)
+	runApp(csvData)
 }
