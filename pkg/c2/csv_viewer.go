@@ -17,7 +17,7 @@ type CsvViewer struct {
 func NewCsvViewer(c *c2csv.CsvData) *CsvViewer {
 	v := new(CsvViewer)
 	v.Data = c
-	v.view = new(view.HeaderSizeView)
+	v.view = new(view.EqDividedView)
 	return v
 }
 
