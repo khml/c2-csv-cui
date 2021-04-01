@@ -14,14 +14,14 @@ func (v *HeaderSizeView) getLine(data *c2csv.CsvData, rowNumber int) string {
 	for i, headerCell := range data.Header.Cells {
 		col := record.Cells[i]
 		line += col.Head(headerCell.Len())
-		p := util.MaxInt(headerCell.Len()-col.Len(), 0) + 1
+		p := util.MaxInt(headerCell.Len()-col.Len(), 0) + ColMargin
 		line += strings.Repeat(util.WHITESPACE, p)
 	}
 	return line
 }
 
 func (v *HeaderSizeView) GetLines(data *c2csv.CsvData, viewPos, rowSize int) *[]string {
-	var lines []string
+	lines := []string{strings.Join(data.Header.ToStrSlice(), strings.Repeat(util.WHITESPACE, ColMargin))}
 
 	upperLimit := util.MinInt(viewPos+rowSize, len(data.Records))
 	for i := viewPos; i < upperLimit; i++ {

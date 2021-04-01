@@ -7,3 +7,5 @@ import (
 type View interface {
 	GetLines(data *c2csv.CsvData, viewPos, rowSize int) *[]string
 }
+
+const ColMargin = 2

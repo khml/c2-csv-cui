@@ -5,7 +5,6 @@ import (
 	"c2/pkg/c2/util"
 	"c2/pkg/c2/view"
 	"github.com/nsf/termbox-go"
-	"strings"
 )
 
 type CsvViewer struct {
@@ -30,7 +29,7 @@ func (v *CsvViewer) render() {
 		header = append(header, col.String())
 	}
 
-	lines := append([]string{strings.Join(header, util.WHITESPACE)}, *v.view.GetLines(v.Data, v.ViewPos, h-2)...)
+	lines := *v.view.GetLines(v.Data, v.ViewPos, h-2)
 	lines = append(lines, util.COLON+string(v.cmdLine))
 
 	for i, row := range lines {
