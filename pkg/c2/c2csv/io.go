@@ -27,19 +27,23 @@ func ReadCsv(filepath string, skipRowNum int) (*CsvData, error) {
 		return nil, err
 	}
 
-	header := toCsvRecord(&csvHeader)
+	header := NewCells(&csvHeader)
 
-	var records []*Row
+	var columns []Cells
+	for i := 0; i < header.Size(); i++ {
+		columns = append(columns, Cells{})
+	}
+
 	for {
-		r, err := reader.Read()
+		row, err := reader.Read()
 		if err != nil {
 			break
 		}
-		records = append(records, toCsvRecord(&r))
-	}
-	return &CsvData{Header: header, Records: records}, nil
-}
 
-func toCsvRecord(rows *[]string) *Row {
-	return FromStrings(rows)
+		for i, s := range row {
+			columns[i].addStr(s)
+		}
+	}
+
+	return NewCsvData(header, &columns), nil
 }

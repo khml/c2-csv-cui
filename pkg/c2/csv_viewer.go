@@ -3,7 +3,6 @@ package c2
 import (
 	"c2/pkg/c2/c2csv"
 	"c2/pkg/c2/util"
-	"c2/pkg/c2/view"
 	"github.com/nsf/termbox-go"
 )
 
@@ -11,30 +10,28 @@ type CsvViewer struct {
 	Data    *c2csv.CsvData
 	ViewPos int
 	cmdLine []rune
-	view    view.View
 }
 
 func NewCsvViewer(c *c2csv.CsvData) *CsvViewer {
 	v := new(CsvViewer)
 	v.Data = c
-	v.view = new(view.EqDividedView)
 	return v
 }
 
 func (v *CsvViewer) render() {
-	_, h := termbox.Size()
+	w, h := termbox.Size()
+	ColMargin := 2
+	colWidth := w/v.Data.ColSize - ColMargin
 
-	var header []string
-	for _, col := range v.Data.Header.Cells {
-		header = append(header, col.String())
+	for i, column := range v.Data.Columns {
+		x := (colWidth + ColMargin) * i
+		RenderLine(x, 0, v.Data.Header.Get(i).String())
+
+		for y, cell := range column.Sub(v.ViewPos, v.ViewPos+h-2) {
+			RenderLine(x, y+1, cell.Head(colWidth))
+		}
 	}
-
-	lines := *v.view.GetLines(v.Data, v.ViewPos, h-2)
-	lines = append(lines, util.COLON+string(v.cmdLine))
-
-	for i, row := range lines {
-		RenderLine(0, i, row)
-	}
+	RenderLine(0, h-1, util.COLON+string(v.cmdLine))
 }
 
 func (v *CsvViewer) BackspaceToCmd() {
@@ -46,11 +43,11 @@ func (v *CsvViewer) BackspaceToCmd() {
 }
 
 func (v *CsvViewer) Down() {
-	v.ViewPos = util.MinInt(v.ViewPos+1, len(v.Data.Records))
+	v.ViewPos = util.MinInt(v.ViewPos+1, v.Data.RowSize)
 }
 
 func (v *CsvViewer) DownN(n int) {
-	v.ViewPos = util.MinInt(v.ViewPos+n, len(v.Data.Records))
+	v.ViewPos = util.MinInt(v.ViewPos+n, v.Data.RowSize)
 }
 
 func (v *CsvViewer) InputToCmd(r rune) {
