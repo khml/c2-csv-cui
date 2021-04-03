@@ -26,6 +26,10 @@ func (c *Cell) String() string {
 	return string(c.val)
 }
 
+func (c *Cell) SubStr(start, len int) string {
+	return string(c.val[start:util.MinInt(start+len, c.Len())])
+}
+
 func str2rune(s string) []rune {
 	return []rune(s)
 }
