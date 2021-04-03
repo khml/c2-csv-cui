@@ -2,27 +2,30 @@ package c2csv
 
 import (
 	"c2/pkg/c2/util"
-	"golang.org/x/exp/utf8string"
 )
 
 type Cell struct {
-	Str *utf8string.String
+	val []rune
 }
 
 func NewCsvCell(str string) *Cell {
 	cell := new(Cell)
-	cell.Str = utf8string.NewString(str)
+	cell.val = str2rune(str)
 	return cell
 }
 
 func (c *Cell) Head(n int) string {
-	return c.Str.Slice(0, util.MinInt(c.Len(), n))
+	return string(c.val[0:util.MinInt(c.Len(), n)])
 }
 
 func (c *Cell) Len() int {
-	return c.Str.RuneCount()
+	return len(c.val)
 }
 
 func (c *Cell) String() string {
-	return c.Str.String()
+	return string(c.val)
+}
+
+func str2rune(s string) []rune {
+	return []rune(s)
 }
